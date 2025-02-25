@@ -140,12 +140,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ANN_Perceptron.h" />
+    <ClInclude Include="ArtificialNN.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="NetworkLayer.h" />
+    <ClInclude Include="Neuron.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ANN_Perceptron.cpp" />
+    <ClCompile Include="ArtificialNN.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="NetworkLayer.cpp" />
+    <ClCompile Include="Neuron.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
