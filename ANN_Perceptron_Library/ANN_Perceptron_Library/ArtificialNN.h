@@ -32,7 +32,7 @@ public:
 	std::vector<std::shared_ptr<NetworkLayer>> mLayers;
 
 	// Constructor to initialize the neural network with specific parameters
-	ARTIFICIALNN_API ArtificialNN(int _numberInput, int numberOutput,
+	ARTIFICIALNN_API ArtificialNN(int _numberInput, int _numberOutput,
 				 int _numberHiddenLayer, int _NumberNeuronPerHiddenLayer, double _learningRate,
 				 Activation_Function _af_HiddenLayer, Activation_Function _af_OutputLayer);
 
@@ -78,6 +78,6 @@ private:
 	ARTIFICIALNN_API double LeakyReLU(double _value);	// Leaky Rectified Linear Unit function
 
 	// Calculates the derivative of the activation function, used during backpropagation
-	ARTIFICIALNN_API double Derivated_Activation_Function(Activation_Function af, double _value);
+	ARTIFICIALNN_API double Derivated_Activation_Function(Activation_Function _af, double _value);
 };
 
