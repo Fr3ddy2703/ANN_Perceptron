@@ -1,43 +1,52 @@
 #pragma once
 
+#include "ActivationFunction.h"
+#include "Defines.h"
 #include <vector>
 
-#define  NEURON_API __declspec(dllexport)
-//#ifdef ANN_PERCEPTRON_EXPORTS
-//#else
-//#define ANN_PERCEPTRON_API __declspec(dllimport)
-//#endif
+
+enum ActivationFTYpe;
 
 // Define a class representing a single neuron in a neural network
-NEURON_API class Neuron
+ANN_API class Neuron
 {
 public:
-	int mNumInputs;			// Number of inputs the neuron receives
+
+private:
+	double mNetInput = 0;			// Number of inputs the neuron receives
 	double mBias;			// Bias value for the neuron, used in its activation function
-	int mOutput;			// The output value of the neuron after processing inputs
-	int mErrorGradient;		// The gradient of the error for this neuron, used during backpropagation
-	int mN;					// The value before activation function is applied (also known as the net input)
+	double mOutput = 0;			// The output value of the neuron after processing inputs
+	double mErrorGradient = 0;		// The gradient of the error for this neuron, used during backpropagation
 
-	std::vector<double> weights; // Dynamic array of weights for each input
-	std::vector<double> inputs; // Dynamic array of inputs received by the neuron
+	std::vector<double> mWeights; // Dynamic array of weights for each input
 
-	// Saves the weights and bias of the current neuron to file
-	NEURON_API void SaveWeightsBias();
 
-	// Initializes the weights and bias of the perceptron to random values
-	NEURON_API void InitializeWeightsAndBias();
-
-	// Handling the random generations of numbers
-	NEURON_API double RandomDoubleNumber(double _lowerLimit, double _upperLimit);
-
-	// Loads the weights and bias of the current neuron from a file
-	NEURON_API void LoadWeightsBias();
+public:
 
 	// Constructor that initializes a neuron with a specific number of inputs
-	NEURON_API Neuron(int _nInputs);
+	ANN_API Neuron(const double& _initBias, std::vector<double>& _initWeight);
 
 	// Destructor
-	NEURON_API ~Neuron() = default;
+	ANN_API ~Neuron() = default;
+
+	// Calculated the output
+	ANN_API double CalculateOutput(const std::vector<double>& _inputs, ActivationFType _afType);
+
+	// Computes the error gradient
+	ANN_API void ComputeErrorGradient(const double& _errorSignal, ActivationFType _afType);
+
+	// Updates the weights 
+	ANN_API void UpdateWeights(const double& _learningRate, const std::vector<double>& _prevOutput);
+
+	// Gets the error gradient
+	ANN_API double GetErrorGradient();
+
+	// Gets the weight
+	ANN_API double GetWeight(const int& _index);
+
+	// Gets the output
+	ANN_API double GetOutput();
+
 };
 
 

@@ -1,31 +1,39 @@
 #pragma once
 
-#include <memory>
-#include <vector>
-
 #include "Neuron.h"
 
-#define  NETWORKLAYER_API __declspec(dllexport)
-
-NETWORKLAYER_API class NetworkLayer
+class NetworkLayer
 {
 public:
-	int numNeurons; // Holds the number of neurons in this layer
 
-	// Vector of shared_ptr to Neuron objects
-	std::vector<std::shared_ptr<Neuron>> mNeurons;
+private:
 
-	// Constructor that initializes a network layer with a specified number of neurons,
-	// each neuron having a specified number of inputs
-	NETWORKLAYER_API NetworkLayer(int _nNeurons, int _numNeuronInputs);
+	std::vector<std::shared_ptr<Neuron>> mLayerNeurons;
+	std::vector<double> mLayerOutputs;
+	ActivationFType mLayerActivationFunctionType;
 
-	// Destructor
-	NETWORKLAYER_API ~NetworkLayer();
+public:
 
-	// Saves the weights and bias of the current layer to a file
-	NETWORKLAYER_API void SaveWeightBias();
+	ANN_API NetworkLayer(const int& _numNeurons, ActivationFType _aft, const int& _numExpectedInputs);
 
-	// Loads the weights and bias of the current layer from a file
-	NETWORKLAYER_API void LoadWeightsBias();
+	ANN_API ~NetworkLayer() = default;
+
+	ANN_API std::vector<double> CalculateLayerOutput(const std::vector<double>& _inputs);
+
+	ANN_API void ComputeErrorGradientLayer(const NetworkLayer& _nextLayer);
+
+	ANN_API void ComputeErrorGradientLayer(const std::vector<double>& _expectedOutput);
+
+	ANN_API void UpdateLayerWeights(const double& _learningRate, const std::vector<double>& _previousOutput);
+
+	ANN_API std::vector<double> GetOutPut();
+
+private:
+
+	ANN_API const std::vector<std::shared_ptr<Neuron>>& GetNeurons() const;
+
+	ANN_API std::vector<double> GetLayerErrorGradient();
+
+	ANN_API double GetRandomDouble(const double& _lowerBound, const double& _upperBound);
 };
 

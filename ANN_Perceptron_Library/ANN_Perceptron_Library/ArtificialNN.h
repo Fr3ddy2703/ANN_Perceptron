@@ -4,18 +4,16 @@
 #include <string>
 #include <vector>
 
+#include "ActivationFunction.h"
 #include "NetworkLayer.h"
 
 #define  ARTIFICIALNN_API __declspec(dllexport)
 
+class ActivationFunction;
 
 ARTIFICIALNN_API class ArtificialNN
 {
 public:
-	enum Activation_Function
-	{
-		BINARY_STEP, SIGMOID, TANH, RELU, LEAKY_RELU
-	};
 
 	// Number of input neurons in the network
 	int mNumInputs;
