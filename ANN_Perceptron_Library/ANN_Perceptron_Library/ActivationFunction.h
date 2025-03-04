@@ -9,7 +9,7 @@ enum ActivationFType
 {
 	AF_Identity,
 	AF_BinaryStep,
-	AF_Sigmoid,
+	AF_SiLU,
 	AF_Hyperbolic,
 	AF_RectifiedLinear,
 	AF_LeakyRectified
@@ -27,8 +27,8 @@ public:
 			return Identity(_calculatedOutput);
 		case ActivationFType::AF_BinaryStep:
 			return BinaryStep(_calculatedOutput);
-		case ActivationFType::AF_Sigmoid:
-			return Sigmoid(_calculatedOutput);
+		case ActivationFType::AF_SiLU:
+			return SiLU(_calculatedOutput);
 		case ActivationFType::AF_Hyperbolic:
 			return Hyperbolic(_calculatedOutput);
 		case ActivationFType::AF_RectifiedLinear:
@@ -50,8 +50,8 @@ public:
 			return IdentityDeriv();
 		case ActivationFType::AF_BinaryStep:
 			return BinaryStepDeriv();
-		case ActivationFType::AF_Sigmoid:
-			return SigmoidDeriv(_calculatedOutput);
+		case ActivationFType::AF_SiLU:
+			return SiLUDeriv(_calculatedOutput);
 		case ActivationFType::AF_Hyperbolic:
 			return HyperbolicDeriv(_calculatedOutput);
 		case ActivationFType::AF_RectifiedLinear:
@@ -82,11 +82,11 @@ private:
 	{
 		return 0;
 	}
-	ANN_API static double Sigmoid(double _calculatedOutput)
+	ANN_API static double SiLU(double _calculatedOutput)
 	{
 		return _calculatedOutput / (1.0 + std::exp(-_calculatedOutput));
 	}
-	ANN_API static double SigmoidDeriv(double _calculatedOutput)
+	ANN_API static double SiLUDeriv(double _calculatedOutput)
 	{
 		double top = 1.0 + std::exp(-_calculatedOutput) + _calculatedOutput * std::exp(-_calculatedOutput);
 		double bottom = std::pow(1.0 + std::exp(-_calculatedOutput),2);

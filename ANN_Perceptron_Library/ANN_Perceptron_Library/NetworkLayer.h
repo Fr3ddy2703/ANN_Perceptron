@@ -26,7 +26,7 @@ public:
 
 	ANN_API void UpdateLayerWeights(const double& _learningRate, const std::vector<double>& _previousOutput);
 
-	ANN_API std::vector<double> GetOutPut();
+	ANN_API std::vector<double> GetOutput();
 
 private:
 

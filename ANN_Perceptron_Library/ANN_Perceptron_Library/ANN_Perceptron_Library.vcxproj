@@ -140,7 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ANN_Perceptron.h" />
-    <ClInclude Include="ArtificialNN.h" />
+    <ClInclude Include="NeuralNetwork.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="ActivationFunction.h" />
     <ClInclude Include="Defines.h" />
@@ -150,7 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ANN_Perceptron.cpp" />
-    <ClCompile Include="ArtificialNN.cpp" />
+    <ClCompile Include="NeuralNetwork.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="NetworkLayer.cpp" />
     <ClCompile Include="Neuron.cpp" />

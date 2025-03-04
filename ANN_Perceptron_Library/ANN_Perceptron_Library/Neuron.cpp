@@ -3,8 +3,6 @@
 
 #include <random>
 
-#include "ArtificialNN.h"
-
 Neuron::Neuron(const double& _initBias, std::vector<double>& _initWeight)
 	: mBias(_initBias), mWeights(_initWeight), mOutput(0), mErrorGradient(0),
 		mNetInput(_initWeight.size())

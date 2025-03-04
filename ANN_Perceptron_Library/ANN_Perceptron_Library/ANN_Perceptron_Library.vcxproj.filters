@@ -24,7 +24,7 @@
     <ClInclude Include="ANN_Perceptron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ArtificialNN.h">
+    <ClInclude Include="NeuralNetwork.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NetworkLayer.h">
@@ -50,7 +50,7 @@
     <ClCompile Include="ANN_Perceptron.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ArtificialNN.cpp">
+    <ClCompile Include="NeuralNetwork.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NetworkLayer.cpp">
