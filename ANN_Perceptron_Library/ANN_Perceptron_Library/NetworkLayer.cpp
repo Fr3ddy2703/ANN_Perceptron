@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "NetworkLayer.h"
-
 #include <random>
 
 NetworkLayer::NetworkLayer(const int& _numNeurons, ActivationFType _aft, const int& _numExpectedInputs)
@@ -18,7 +17,7 @@ NetworkLayer::NetworkLayer(const int& _numNeurons, ActivationFType _aft, const i
 	}
 }
 
-ANN_API std::vector<double> NetworkLayer::CalculateLayerOutput(const std::vector<double>& _inputs)
+std::vector<double> NetworkLayer::CalculateLayerOutput(const std::vector<double>& _inputs)
 {
 	if (mLayerOutputs.size() != mLayerNeurons.size())
 			mLayerOutputs.resize(mLayerNeurons.size());
@@ -29,7 +28,7 @@ ANN_API std::vector<double> NetworkLayer::CalculateLayerOutput(const std::vector
 	return mLayerOutputs;
 }
 
-ANN_API void NetworkLayer::ComputeErrorGradientLayer(const NetworkLayer& _nextLayer)
+void NetworkLayer::ComputeErrorGradientLayer(const NetworkLayer& _nextLayer)
 {
 	for (int i = 0; i < static_cast<int>(mLayerNeurons.size()); i++)
 	{
@@ -43,19 +42,19 @@ ANN_API void NetworkLayer::ComputeErrorGradientLayer(const NetworkLayer& _nextLa
 	}
 }
 
-ANN_API void NetworkLayer::ComputeErrorGradientLayer(const std::vector<double>& _expectedOutput)
+void NetworkLayer::ComputeErrorGradientLayer(const std::vector<double>& _expectedOutput)
 {
 	for(size_t i = 0; i < mLayerNeurons.size(); i++)
 			mLayerNeurons[i]->ComputeErrorGradient(_expectedOutput[i] - mLayerNeurons[i]->GetOutput(), mLayerActivationFunctionType);
 }
 
-ANN_API void NetworkLayer::UpdateLayerWeights(const double& _learningRate, const std::vector<double>& _previousOutput)
+void NetworkLayer::UpdateLayerWeights(const double& _learningRate, const std::vector<double>& _previousOutput)
 {
-	for (const std::shared_ptr<Neuron>& neuron : mLayerNeurons)
+	for (std::shared_ptr<Neuron>& neuron : mLayerNeurons)
 			neuron->UpdateWeights(_learningRate, _previousOutput);
 }
 
-ANN_API std::vector<double> NetworkLayer::GetOutput()
+std::vector<double> NetworkLayer::GetOutput()
 {
 	std::vector<double> outputs;
 
@@ -65,12 +64,12 @@ ANN_API std::vector<double> NetworkLayer::GetOutput()
 	return outputs;
 }
 
-ANN_API const std::vector<std::shared_ptr<Neuron>>& NetworkLayer::GetNeurons() const
+const std::vector<std::shared_ptr<Neuron>>& NetworkLayer::GetNeurons() const
 {
 	return mLayerNeurons;
 }
 
-ANN_API std::vector<double> NetworkLayer::GetLayerErrorGradient()
+std::vector<double> NetworkLayer::GetLayerErrorGradient()
 {
 	std::vector<double> gradients;
 
@@ -80,7 +79,7 @@ ANN_API std::vector<double> NetworkLayer::GetLayerErrorGradient()
 	return gradients;
 }
 
-ANN_API double NetworkLayer::GetRandomDouble(const double& _lowerBound, const double& _upperBound)
+double NetworkLayer::GetRandomDouble(const double& _lowerBound, const double& _upperBound)
 {
 	std::random_device rd;
 

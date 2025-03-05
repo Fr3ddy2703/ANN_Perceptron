@@ -1,15 +1,12 @@
 #include "pch.h"
 #include "Neuron.h"
 
-#include <random>
-
 Neuron::Neuron(const double& _initBias, std::vector<double>& _initWeight)
-	: mBias(_initBias), mWeights(_initWeight), mOutput(0), mErrorGradient(0),
-		mNetInput(_initWeight.size())
+	: mBias(_initBias), mWeights(std::move(_initWeight))
 {
 }
 
-ANN_API double Neuron::CalculateOutput(const std::vector<double>& _inputs, ActivationFType _afType)
+double Neuron::CalculateOutput(const std::vector<double>& _inputs, ActivationFType _afType)
 {
 	if (_inputs.size() != mWeights.size())
 	{
@@ -22,45 +19,45 @@ ANN_API double Neuron::CalculateOutput(const std::vector<double>& _inputs, Activ
 		output += _inputs[i] * mWeights[i];
 	}
 
-	mNetInput += output;
+	mNetInput = output;
 
 	mOutput = Activation_Function::ExecuteActivationFunction(output, _afType);
 
 	return mOutput;
 }
 
-ANN_API void Neuron::ComputeErrorGradient(const double& _errorSignal, ActivationFType _afType)
+void Neuron::ComputeErrorGradient(const double& _errorSignal, ActivationFType _afType)
 {
-	double activationDerivative = Activation_Function::ExecuteActivationFunctionDerivative(mOutput, _afType);
+	double activationDerivative = Activation_Function::ExecuteActivationFunctionDerivative(mNetInput, _afType);
 
 	mErrorGradient = _errorSignal * activationDerivative;
 }
 
-ANN_API void Neuron::UpdateWeights(const double& _learningRate, const std::vector<double>& _prevOutput)
+void Neuron::UpdateWeights(const double& _learningRate, const std::vector<double>& _prevOutput)
 {
 	for (size_t i = 0; i < mWeights.size(); i++)
 	{
-		mWeights[i] -= _learningRate * mErrorGradient * _prevOutput[i];
+		mWeights[i] += _learningRate * mErrorGradient * _prevOutput[i];
 	}
 
-	mBias -= _learningRate * mErrorGradient;
+	mBias += _learningRate * mErrorGradient;
 }
 
-ANN_API double Neuron::GetErrorGradient()
+double Neuron::GetErrorGradient()
 {
 	return mErrorGradient;
 }
 
-ANN_API double Neuron::GetWeight(const int& _index)
+double Neuron::GetWeight(const int& _index)
 {
-	if (_index >= 0 && _index < mWeights.size())
+	if (_index >= static_cast<int>(mWeights.size() || _index < 0))
 	{
 		return mWeights[_index];
 	}
 	return 0.0;
 }
 
-ANN_API double Neuron::GetOutput()
+double Neuron::GetOutput()
 {
 	return mOutput;
 }

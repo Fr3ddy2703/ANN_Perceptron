@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "NeuralNetwork.h"
-
 #include <iostream>
 
 NeuralNetwork::NeuralNetwork(std::vector<std::pair<int, ActivationFType>> _layerCreation, const double& _learningRate)
@@ -10,7 +9,7 @@ NeuralNetwork::NeuralNetwork(std::vector<std::pair<int, ActivationFType>> _layer
 			mNetworkLayers.emplace_back(NetworkLayer(_layerCreation[i].first, _layerCreation[i].second, _layerCreation[i - 1].first));
 }
 
-ANN_API std::vector<double> NeuralNetwork::CalculateNetworkOutput(const std::vector<double>& _inputs)
+std::vector<double> NeuralNetwork::CalculateNetworkOutput(const std::vector<double>& _inputs)
 {
 	std::vector<double> output = _inputs;
 
@@ -21,7 +20,7 @@ ANN_API std::vector<double> NeuralNetwork::CalculateNetworkOutput(const std::vec
 	return output;
 }
 
-ANN_API void NeuralNetwork::Train(const std::vector<std::vector<double>>& _trainingInputs,
+void NeuralNetwork::Train(const std::vector<std::vector<double>>& _trainingInputs,
 									const std::vector<std::vector<double>>& _trainingOutputs, 
 									const int& _epochs, bool _print)
 {
@@ -41,7 +40,7 @@ ANN_API void NeuralNetwork::Train(const std::vector<std::vector<double>>& _train
 				loss += diff * diff;
 			}
 
-			totalLoss += loss / output.size();
+			totalLoss += loss;
 
 			Backropagate(_trainingOutputs[i]);
 			UpdateNetworkWeights(_trainingInputs[i]);
@@ -53,7 +52,7 @@ ANN_API void NeuralNetwork::Train(const std::vector<std::vector<double>>& _train
 	}
 }
 
-ANN_API void NeuralNetwork::Backropagate(const std::vector<double>& _expectedOutputs)
+void NeuralNetwork::Backropagate(const std::vector<double>& _expectedOutputs)
 {
 	mNetworkLayers.back().ComputeErrorGradientLayer(_expectedOutputs);
 
@@ -61,7 +60,7 @@ ANN_API void NeuralNetwork::Backropagate(const std::vector<double>& _expectedOut
 		mNetworkLayers[i].ComputeErrorGradientLayer(mNetworkLayers[i + 1]);
 }
 
-ANN_API void NeuralNetwork::UpdateNetworkWeights(const std::vector<double>& _trainingInputs)
+void NeuralNetwork::UpdateNetworkWeights(const std::vector<double>& _trainingInputs)
 {
 	std::vector<double> previousOutputs = _trainingInputs;
 

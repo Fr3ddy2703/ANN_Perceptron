@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Defines.h"
 #include <complex>
 #include <memory>
 #include <utility>
@@ -9,6 +8,7 @@ enum ActivationFType
 {
 	AF_Identity,
 	AF_BinaryStep,
+	AF_Sigmoid,
 	AF_SiLU,
 	AF_Hyperbolic,
 	AF_RectifiedLinear,
@@ -19,7 +19,7 @@ class Activation_Function
 {
 public:
 
-	ANN_API static double ExecuteActivationFunction(double _calculatedOutput, ActivationFType _aft)
+	static double ExecuteActivationFunction(double _calculatedOutput, ActivationFType _aft)
 	{
 		switch (_aft)
 		{
@@ -29,6 +29,8 @@ public:
 			return BinaryStep(_calculatedOutput);
 		case ActivationFType::AF_SiLU:
 			return SiLU(_calculatedOutput);
+		case ActivationFType::AF_Sigmoid:
+			return Sigmoid(_calculatedOutput);
 		case ActivationFType::AF_Hyperbolic:
 			return Hyperbolic(_calculatedOutput);
 		case ActivationFType::AF_RectifiedLinear:
@@ -38,11 +40,10 @@ public:
 
 		}
 
-		throw std::invalid_argument("No Activation function Match");
 		return -1;
 	}
 
-	ANN_API static double ExecuteActivationFunctionDerivative(double _calculatedOutput, ActivationFType _aft)
+	static double ExecuteActivationFunctionDerivative(double _calculatedOutput, ActivationFType _aft)
 	{
 		switch (_aft)
 		{
@@ -50,6 +51,8 @@ public:
 			return IdentityDeriv();
 		case ActivationFType::AF_BinaryStep:
 			return BinaryStepDeriv();
+		case ActivationFType::AF_Sigmoid:
+			return SigmoidDeriv(_calculatedOutput);
 		case ActivationFType::AF_SiLU:
 			return SiLUDeriv(_calculatedOutput);
 		case ActivationFType::AF_Hyperbolic:
@@ -60,60 +63,68 @@ public:
 			return LeakyRectifiedDeriv(_calculatedOutput);
 		}
 
-		throw std::invalid_argument("No Derivative Activation function Match");
 		return -1;
 	}
 
 private:
 
-	ANN_API static double Identity(double _calculatedOutput)
+	static double Identity(double _calculatedOutput)
 	{
 		return _calculatedOutput;
 	}
-	ANN_API static double IdentityDeriv()
+	static double IdentityDeriv()
 	{
 		return 1;
 	}
-	ANN_API static double BinaryStep(double _calculatedOutput)
+	static double BinaryStep(double _calculatedOutput)
 	{
 		return _calculatedOutput >= 0 ? 1 : 0;
 	}
-	ANN_API static double BinaryStepDeriv()
+	static double BinaryStepDeriv()
 	{
 		return 0;
 	}
-	ANN_API static double SiLU(double _calculatedOutput)
+	static double Sigmoid(double _calculatedOutput)
+	{
+		return 1.0 / (1.0 + std::exp(-_calculatedOutput));
+	}
+	static double SigmoidDeriv(double _calculatedOutput)
+	{
+		double sig = Sigmoid(_calculatedOutput);
+		return sig * (1 - sig);
+	}
+	static double SiLU(double _calculatedOutput)
 	{
 		return _calculatedOutput / (1.0 + std::exp(-_calculatedOutput));
 	}
-	ANN_API static double SiLUDeriv(double _calculatedOutput)
+	static double SiLUDeriv(double _calculatedOutput)
 	{
 		double top = 1.0 + std::exp(-_calculatedOutput) + _calculatedOutput * std::exp(-_calculatedOutput);
 		double bottom = std::pow(1.0 + std::exp(-_calculatedOutput),2);
 		return top / bottom;
 	}
-	ANN_API static double Hyperbolic(double _calculatedOutput)
+	static double Hyperbolic(double _calculatedOutput)
 	{
 		return tanh(_calculatedOutput);
 	}
-	ANN_API static double HyperbolicDeriv(double _calculatedOutput)
+	static double HyperbolicDeriv(double _calculatedOutput)
 	{
 		double hyper = Hyperbolic(_calculatedOutput);
 		return 1 - std::pow(hyper, 2);
 	}
-	ANN_API static double RectifiedLinear(double _calculatedOutput)
+	static double RectifiedLinear(double _calculatedOutput)
 	{
 		return _calculatedOutput > 0 ? _calculatedOutput : 0;
 	}
-	ANN_API static double RectifiedLinearDeriv(double _calculatedOutput)
+	static double RectifiedLinearDeriv(double _calculatedOutput)
 	{
 		return _calculatedOutput > 0 ? 1 : 0;
 	}
-	ANN_API static double LeakyRectified(double _calculatedOutput)
+	static double LeakyRectified(double _calculatedOutput)
 	{
 		return _calculatedOutput <= 0 ? 0.01 * _calculatedOutput : _calculatedOutput;
 	}
-	ANN_API static double LeakyRectifiedDeriv(double _calculatedOutput)
+	static double LeakyRectifiedDeriv(double _calculatedOutput)
 	{
 		return _calculatedOutput < 0 ? 0.01 : 1;
 	}
