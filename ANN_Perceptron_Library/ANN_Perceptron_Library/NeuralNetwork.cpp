@@ -52,6 +52,75 @@ void NeuralNetwork::Train(const std::vector<std::vector<double>>& _trainingInput
 	}
 }
 
+ANN_API int NeuralNetwork::SelectionActionSoftmax(const std::vector<double>& _state)
+{
+	std::vector<double> QValues = CalculateNetworkOutput(_state);
+
+	std::vector<double> probabilites(QValues.size());
+
+	double sumExp = 0.0;
+
+	for (double q : QValues)
+		sumExp += std::exp(q / mTau);
+	
+	for (size_t i = 0; i < QValues.size(); i++)
+		probabilites[i] = std::exp(QValues[i] / mTau / sumExp);
+
+	double r = (double)rand() / RAND_MAX;
+	double cumulativeProbability = 0.0;
+
+	for (size_t i = 0; i < probabilites.size(); i++)
+	{
+		cumulativeProbability += probabilites[i];
+		if (r <= cumulativeProbability)
+			return static_cast<int>(i);
+	}
+	return static_cast<int>(QValues.size() - 1);
+}
+
+void NeuralNetwork::StoreExperience(const std::vector<double>& _state, int _action, double _reward, 
+									const std::vector<double>& _nextState, 
+									bool _terminal)
+{
+	if (mReplayBuffer.size() >= mCapacity)
+		mReplayBuffer.erase(mReplayBuffer.begin());
+
+	mReplayBuffer.push_back({_state, _action, 
+		_reward, _nextState, _terminal });
+
+}
+
+void NeuralNetwork::TrainQLearning()
+{
+	if (mReplayBuffer.size() < 32)
+		return;
+
+	std::vector<Experience> batch;
+
+	for (int i = 0; i < 32; i++)
+		batch.push_back(mReplayBuffer[rand() % mReplayBuffer.size()]);
+
+	for (Experience& exp : batch)
+	{
+		std::vector<double> QValue = CalculateNetworkOutput(exp.mState);
+		double targetQ = exp.mReward;
+
+		if (!exp.mTerminal)
+		{
+			std::vector<double> nextQValues = CalculateNetworkOutput(exp.mNextState);
+			targetQ += mDiscountFactor * (*std::max_element(nextQValues.begin(), nextQValues.end()));
+		}
+
+		QValue[exp.mAction] = targetQ;
+
+		Backropagate(QValue);
+		UpdateNetworkWeights(exp.mState);
+	}
+
+	if (mTau > mTauMin)
+		mTau *= mTauDecay;
+}
+
 void NeuralNetwork::Backropagate(const std::vector<double>& _expectedOutputs)
 {
 	mNetworkLayers.back().ComputeErrorGradientLayer(_expectedOutputs);

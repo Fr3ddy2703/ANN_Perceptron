@@ -4,6 +4,15 @@
 
 class ActivationFunction;
 
+struct Experience
+{
+	std::vector<double> mState;
+	int mAction;
+	double mReward;
+	std::vector<double> mNextState;
+	bool mTerminal;
+};
+
 ANN_API class NeuralNetwork
 {
 
@@ -14,6 +23,14 @@ private:
 
 	// Learning rate for the ANN
 	double mLearningRate;
+	double mDiscountFactor = 0.99;
+	double mTau = 1.0;
+	double mTauDecay = 0.995;
+	double mTauMin = 0.1;
+
+	size_t mCapacity = 10000;
+
+	std::vector<Experience> mReplayBuffer;
 
 	// Stores the numbers of network layers
 	std::vector<NetworkLayer> mNetworkLayers;
@@ -31,6 +48,14 @@ public:
 	ANN_API void Train(const std::vector<std::vector<double>>& _trainingInputs,
 					   const std::vector<std::vector<double>>& _trainingOutputs,
 					   const int& _epochs, bool _print);
+
+	ANN_API int SelectionActionSoftmax(const std::vector<double>& _state);
+
+	ANN_API void StoreExperience(const std::vector<double>& _state, int _action, 
+								double _reward, const std::vector<double>& _nextState,
+								bool _terminal);
+
+	ANN_API void TrainQLearning();
 
 
 private:
